@@ -4,24 +4,31 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>xConnect Helper</title>
+    <link rel="Stylesheet" type="text/css" href="xConnectHelper.css">
 </head>
 <body>
-    <form id="form1" runat="server">
-		<h1>xConnect Helper</h1>
+    <form id="form1" runat="server">	
 		
-        <div>
+        <div class="wrapper">
+			<h1>xConnect Helper</h1>
+		
+            <% if (Messages.Count > 0)
+                { %>
             <div class="messages">
                 <td>
 					<ul>
-						<% foreach(var msg in Messages) { %>
+						<% foreach (var msg in Messages)
+                                          { %>
 							<li><%= msg %></li>
 						<% } %>
 					</ul>
 				</td>
             </div>
+            <% } %>
             
-            <div class="contactinfo">
+            <div class="box contactinfo">
+				<h2>Contact Data</h2>
 				<table>
                     <tr><td>Collection Status</td><td><%= Status.Collection %></td></tr>
 					<tr><td>Contact ID</td><td><%= Contact.ContactId %></td></tr>
@@ -51,7 +58,7 @@
 				</table>
             </div>
 			
-			<div class="contact-identify">
+			<div class="box contact-identify">
 				<h2>Contact identifiers</h2>
 				<table>				
 					<tr>
@@ -67,7 +74,7 @@
 	            <asp:Button runat="server" OnClick="IdentifyContact_Click" Text="Identify current contact" />          
 			</div>
 
-            <div class="contact-data">
+            <div class="box contact-data">
 				<h2>Contact Data</h2>
 				<table>				
 					<tr>
@@ -86,7 +93,7 @@
 				<asp:Button runat="server" OnClick="SetContactData_Click" Text="Set contact data" /> 
 			</div>
             
-            <div class="current-session">
+            <div class="box current-session">
 				<h2>Flush Session</h2>
 				<asp:Button runat="server" ID="FlushSession" OnClick="FlushSession_Click" Text="Flush current session" />
 			</div>     

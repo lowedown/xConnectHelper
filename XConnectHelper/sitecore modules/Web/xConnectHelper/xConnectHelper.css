@@ -1,0 +1,42 @@
+﻿body {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 12px;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+.wrapper {
+    width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+ul li {
+}
+
+table {
+    margin-bottom: 1.25rem;
+}
+
+.messages {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    position: relative;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+}
+
+.box {
+    background-color: #e2e3e5;
+    border-color: #d6d8db;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+}

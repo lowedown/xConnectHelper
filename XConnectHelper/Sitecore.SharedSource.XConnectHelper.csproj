@@ -115,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Config\Modules\xConnectHelper\xConnectHelper.config" />
+    <Content Include="sitecore modules\Web\xConnectHelper\xConnectHelper.css" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
