@@ -23,10 +23,9 @@ Interact with your website and then hit **flush current session**. Processing of
 The experience profile manager only lists identified contacts. You can set an identifier for your contact, then flush session. Your contact should show in the list within a few seconds.
 
 ## How to install
-1. Clone Repo
-2. Build and publish to your site.
-3. Set a hard-to guess key in App_Config/Modules/xConnectHelper/xConnectHelper.config
-4. Access your page through */sitecore%20modules/Web/xConnectHelper/xConnectHelper.aspx?key=<yourkey>*
+1. Download Release-Zip and integrate into your build
+2. Set a hard-to guess key in App_Config/Modules/xConnectHelper/xConnectHelper.config
+3. Access your page through */sitecore%20modules/Web/xConnectHelper/xConnectHelper.aspx?key=<yourkey>*
 
 **Important Note**: Because this tool is made to debug current contacts and interactions in-session, it can not be used as a regular Sitecore admin page and is therefore publicly accessible (if your access key is known). You are responsible for setting appropriate measures to regulate access to this page.
 
