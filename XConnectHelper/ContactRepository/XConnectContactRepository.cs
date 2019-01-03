@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Sitecore.SharedSource.XConnectHelper.ContactRepository
 {
-    public class XConnectContactRepository : IContactRepository
+    internal class XConnectContactRepository : IContactRepository
     {
         private Contact GetContact(string source, string identifier, string FacetKey)
         {

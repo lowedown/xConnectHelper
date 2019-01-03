@@ -17,7 +17,7 @@ using System.Web;
 
 namespace Sitecore.SharedSource.XConnectHelper.Impl
 {
-    public class XConnectService : IXConnectService
+    internal class XConnectService : IXConnectService
     {
         public ContactData Contact
         {

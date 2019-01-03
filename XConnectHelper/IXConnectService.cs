@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Sitecore.SharedSource.XConnectHelper.Helper
 {
-    public interface IXConnectService
+    internal interface IXConnectService
     {
         ContactData Contact
         {

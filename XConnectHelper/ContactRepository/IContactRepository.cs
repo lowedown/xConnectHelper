@@ -2,7 +2,7 @@
 
 namespace Sitecore.SharedSource.XConnectHelper.ContactRepository
 {
-    public interface IContactRepository
+    internal interface IContactRepository
     {
         /// <summary>
         /// Returns the xConnect contact for the current contact loaded into the tracker. This method ensures that a new contact is saved first.
