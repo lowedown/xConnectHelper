@@ -57,6 +57,24 @@
 					</tr>
 				</table>
             </div>
+
+            <div class="box session-data">
+				<h2>Session Data</h2>
+				<table>				
+					<tr>
+						<td><label for="Identifier">Geo City & Country:</label></td>
+						<td><%= SessionData.GeoCity %> / <%= SessionData.GeoCountry %></td>
+					</tr>
+					<tr>
+						<td><label for="Identifier">Channel:</label></td>
+						<td><%= SessionData.Channel %></td>
+					</tr>
+                    <tr>
+						<td><label for="Identifier">Engagement Value:</label></td>
+						<td><%= SessionData.EngagementValue %></td>
+					</tr>
+				</table>         
+			</div>
 			
 			<div class="box contact-identify">
 				<h2>Contact identifiers</h2>

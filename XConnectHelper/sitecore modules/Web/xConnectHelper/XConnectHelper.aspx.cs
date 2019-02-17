@@ -15,6 +15,7 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
         protected ContactData Contact;
         protected List<string> Messages = new List<string>();
         protected ServiceStatus Status;
+        protected SessionData SessionData;
 
         protected override void OnInit(EventArgs e)
         {
@@ -41,9 +42,12 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
         protected void InitPage()
         {
             _helper = new XConnectService();
+            _helper.DontTrackPageView();
 
             Status = _helper.GetStatus();
             Contact = new ContactData();
+            SessionData = _helper.SessionData;
+
 
             if (!_helper.IsTrackerActive)
             {

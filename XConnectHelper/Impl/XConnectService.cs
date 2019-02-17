@@ -1,5 +1,4 @@
 ﻿using Sitecore.Analytics;
-using Sitecore.Analytics.Model.Entities;
 using Sitecore.Analytics.XConnect.Facets;
 using Sitecore.Configuration;
 using Sitecore.SharedSource.XConnectHelper.ContactRepository;
@@ -51,6 +50,25 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
             }
         }
 
+        public SessionData SessionData
+        {
+            get
+            {
+                if (!IsTrackerActive)
+                {
+                    return new SessionData();
+                }
+
+                return new SessionData()
+                {
+                    Channel = Tracker.Current.Session.Interaction.ChannelId.ToString(),
+                    EngagementValue = Tracker.Current.Session.Interaction.Value.ToString(),
+                    GeoCity = Tracker.Current.Interaction.GeoData?.City,
+                    GeoCountry = Tracker.Current.Interaction.GeoData?.Country
+                };
+            }
+        }
+
         public bool IsTrackerActive
         {
             get
@@ -62,6 +80,15 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
         public void FlushSession()
         {
             HttpContext.Current.Session.Abandon();
+        }
+
+        public void DontTrackPageView()
+        {
+            if (IsTrackerActive)
+            {
+                Tracker.Current?.Interaction?.CurrentPage?.Cancel();
+                Tracker.Current?.Session?.Interaction?.AcceptModifications();
+            }
         }
 
         public ServiceStatus GetStatus()

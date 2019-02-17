@@ -1,17 +1,18 @@
-﻿using Sitecore.Analytics;
+﻿using System;
+using System.Linq;
+using Sitecore.Analytics;
 using Sitecore.Analytics.Model;
 using Sitecore.Diagnostics;
+using Sitecore.SharedSource.XConnectHelper.ContactRepository;
 using Sitecore.XConnect;
 using Sitecore.XConnect.Client;
 using Sitecore.XConnect.Client.Configuration;
-using System;
-using System.Linq;
 
 namespace Sitecore.SharedSource.XConnectHelper.ContactRepository
 {
-    internal class XConnectContactRepository : IContactRepository
+    public class XConnectContactRepository : IContactRepository
     {
-        private Contact GetContact(string source, string identifier, string FacetKey)
+        private Sitecore.XConnect.Contact GetContact(string source, string identifier, string FacetKey)
         {
             using (XConnectClient client = SitecoreXConnectClientConfiguration.GetClient())
             {
@@ -19,10 +20,10 @@ namespace Sitecore.SharedSource.XConnectHelper.ContactRepository
                 {
                     if (string.IsNullOrEmpty(FacetKey))
                     {
-                        return client.Get<Contact>(new IdentifiedContactReference(source, identifier), new ContactExpandOptions());
+                        return client.Get<Sitecore.XConnect.Contact>(new IdentifiedContactReference(source, identifier), new ContactExpandOptions());
                     }
 
-                    return client.Get<Contact>(new IdentifiedContactReference(source, identifier), new ContactExpandOptions(FacetKey));
+                    return client.Get<Sitecore.XConnect.Contact>(new IdentifiedContactReference(source, identifier), new ContactExpandOptions(FacetKey));
                 }
                 catch (XdbExecutionException ex)
                 {
@@ -37,7 +38,7 @@ namespace Sitecore.SharedSource.XConnectHelper.ContactRepository
             }
         }
 
-        public bool SaveFacet<T>(Contact contact, string FacetKey, T Facet) where T : Facet
+        public bool SaveFacet<T>(Sitecore.XConnect.Contact contact, string FacetKey, T Facet) where T : Facet
         {
             using (XConnectClient client = SitecoreXConnectClientConfiguration.GetClient())
             {
@@ -89,7 +90,7 @@ namespace Sitecore.SharedSource.XConnectHelper.ContactRepository
             return true;
         }
 
-        public Contact GetCurrentContact(string facetKey)
+        public Sitecore.XConnect.Contact GetCurrentContact(string facetKey)
         {
             var manager = Sitecore.Configuration.Factory.CreateObject("tracking/contactManager", true) as Sitecore.Analytics.Tracking.ContactManager;
 
@@ -99,7 +100,7 @@ namespace Sitecore.SharedSource.XConnectHelper.ContactRepository
                 return null;
             }
 
-            if (Tracker.Current.Contact.IsNew)
+            if (!IsContactIdentified(Tracker.Current.Contact))
             {
                 // Save contact first
                 Tracker.Current.Contact.ContactSaveMode = ContactSaveMode.AlwaysSave;
@@ -114,8 +115,13 @@ namespace Sitecore.SharedSource.XConnectHelper.ContactRepository
             }
         }
 
-        public T GetFacet<T>(Contact contact, string FacetKey) where T : Facet
-        {            
+        private bool IsContactIdentified(Sitecore.Analytics.Tracking.Contact trackingContact)
+        {
+            return !trackingContact.IsNew && trackingContact.Identifiers.Any();
+        }
+
+        public T GetFacet<T>(Sitecore.XConnect.Contact contact, string FacetKey) where T : Facet
+        {
             using (XConnectClient client = SitecoreXConnectClientConfiguration.GetClient())
             {
                 try
