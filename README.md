@@ -1,6 +1,8 @@
 # xConnectHelper
 This helper page allows you to test if your xConnect functionality is working as expected.
-[[https://github.com/lowedown/xConnectHelper/doc/screenshot.png|alt=Screenshot of xConnectHelper]] 
+
+![Screenshot of xConnectHelper](doc/screenshot.png?raw=true "Screenshot")
+
 
 ## How does it help? 
 After installing, you can access the page through 
