@@ -42,11 +42,11 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                 // The emails facet is not loaded into session by default. Therefore we load it from xConnect
                 var repository = new XConnectContactRepository();
                 var emails = repository.GetFacet<EmailAddressList>(repository.GetCurrentContact(EmailAddressList.DefaultFacetKey), EmailAddressList.DefaultFacetKey);
-                
+
                 if (emails != null)
                 {
-                    contact.Emails = emails.Others.Select((k,v) => $"{k} ({v})");
-                    contact.PreferredEmail = emails.PreferredEmail.SmtpAddress;                    
+                    contact.Emails = emails.Others.Select((k, v) => $"{k} ({v})");
+                    contact.PreferredEmail = emails.PreferredEmail.SmtpAddress;
                 }
 
                 contact.ContactId = "New. (Not persisted to XDB yet)";
@@ -54,7 +54,7 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                 {
                     var xConnectContact = repository.GetCurrentContact(EmailAddressList.DefaultFacetKey);
                     contact.ContactId = xConnectContact?.Id.ToString();
-                }                
+                }
 
                 return contact;
             }
@@ -73,7 +73,12 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                 foreach (var profileName in Tracker.Current.Interaction.Profiles.GetProfileNames())
                 {
                     var profile = Tracker.Current.Interaction.Profiles[profileName];
-                    profileData.Add($"{profile.ProfileName} Count: {profile.Count} Pattern: {profile.PatternId} {profile.PatternLabel}");
+                    profileData.Add($"Name: {profile.ProfileName}");
+                    profileData.Add($"Pattern: {profile.PatternLabel} ({profile.PatternId})");
+                    foreach (var value in profile)
+                    {
+                        profileData.Add($"{value.Key}: {value.Value}");
+                    }
                 }
 
                 return new SessionData()
@@ -83,7 +88,7 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                     GeoCity = Tracker.Current.Interaction.GeoData?.City,
                     GeoCountry = Tracker.Current.Interaction.GeoData?.Country,
                     ProfileData = profileData
-                };             
+                };
             }
         }
 
@@ -107,7 +112,7 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                 Tracker.Current?.Interaction?.CurrentPage?.Cancel();
                 Tracker.Current?.Session?.Interaction?.AcceptModifications();
             }
-        }        
+        }
 
         public void SetContactData(string firstName, string lastName, string email)
         {
