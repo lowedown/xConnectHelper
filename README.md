@@ -1,5 +1,6 @@
 # xConnectHelper
 This helper page allows you to test if your xConnect functionality is working as expected.
+[[https://github.com/lowedown/xConnectHelper/doc/screenshot.png|alt=Screenshot of xConnectHelper]] 
 
 ## How does it help? 
 After installing, you can access the page through 
@@ -19,14 +20,14 @@ On this page you can...
 ##### I want to check the xConnect connection
 If there is a connection problem, this will be immediately shown on the *xConnectHelper* page. Also, if the tracker is not active becaues of config or license issues.
 xConnect helper validates:
-- connection string
-- https access to Service
+- connection strings
+- https access to Services
 - Server certificate validity
 - Client certificate validity and read rights to private key
 
-##### I want to check if data is written to the collection and reporting db**:
+##### I want to check if data is written to the collection and reporting db:
 Interact with your website and then hit **flush current session**. Processing of your contact and interactions will immediately start and data should be visible in the databases within seconds.
-##### I want to test contact search / experience profile**:
+##### I want to test contact search / experience profile:
 The experience profile manager only lists identified contacts. You can set an identifier for your contact, then flush session. Your contact should show in the list within a few seconds.
 
 ## How to install
