@@ -93,7 +93,7 @@
 
                 <% foreach (var service in Status)
                     { %>
-                    <h3><%= service.ServiceName %><%= !service.Error ? ": OK" : string.Empty %></h3>
+                    <h3><%= service.ServiceName %><%= !service.Error ? ": OK" : "ERROR" %></h3>
 					<ul>
 					<% foreach (var msg in service.Messages)
                     { %>
