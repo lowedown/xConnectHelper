@@ -37,6 +37,9 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            _helper = new XConnectService();
+            _helper.DontTrackPageView();
+
             if (!IsPostBack)
             {
                 InitPage();
@@ -44,10 +47,7 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
         }
 
         protected void InitPage()
-        {
-            _helper = new XConnectService();
-            _helper.DontTrackPageView();
-
+        {          
             Contact = new ContactData();
             SessionData = _helper.SessionData;
 
@@ -98,12 +98,14 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
         protected void IdentifyContact_Click(object sender, EventArgs e)
         {
             _helper.SetIdentifier(Identifier.Text, IdentifierSource.Text);
+            Messages.Add("Identifier has been set");
             InitPage();
         }
 
         protected void SetContactData_Click(object sender, EventArgs e)
         {
             _helper.SetContactData(Firstname.Text, Lastname.Text, EmailAddress.Text);
+            Messages.Add("Contact Data has been set");
             InitPage();
         }
     }
