@@ -75,11 +75,13 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
             // Include invalid certifiates first
             var certCollection = certStore.Certificates.Find(findType, connStringParts["FindValue"], false);
 
+            certStore.Close();
+
             if (certCollection.Count == 0)
             {
                 Messages.Add($"Client certificate not found. Connection String: '{connString}'");
 
-                if (!Regex.IsMatch(connStringParts["FindValue"], "[A-Z0-9]"))
+                if (!Regex.IsMatch(connStringParts["FindValue"], "^[A-F0-9]+$"))
                 {
                     Messages.Add($"Thumbprint not uppercase or it contains invalid characters: '{connStringParts["FindValue"]}'");
                 }
@@ -95,7 +97,9 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
             }
 
             // Now only valid certificates
+            certStore.Open(OpenFlags.ReadOnly);
             certCollection = certStore.Certificates.Find(X509FindType.FindByThumbprint, connStringParts["FindValue"], true);
+            certStore.Close();
 
             if (certCollection.Count == 0)
             {
@@ -104,7 +108,7 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                 return;
             }
 
-            certStore.Close();
+
 
             // Check private key access            
             try
