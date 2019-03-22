@@ -3,14 +3,13 @@ using System.Linq;
 using Sitecore.Analytics;
 using Sitecore.Analytics.Model;
 using Sitecore.Diagnostics;
-using Sitecore.SharedSource.XConnectHelper.ContactRepository;
 using Sitecore.XConnect;
 using Sitecore.XConnect.Client;
 using Sitecore.XConnect.Client.Configuration;
 
 namespace Sitecore.SharedSource.XConnectHelper.ContactRepository
 {
-    public class XConnectContactRepository : IContactRepository
+    internal class XConnectContactRepository : IContactRepository
     {
         private Sitecore.XConnect.Contact GetContact(string source, string identifier, string FacetKey)
         {
@@ -105,6 +104,7 @@ namespace Sitecore.SharedSource.XConnectHelper.ContactRepository
                 // Save contact first
                 Tracker.Current.Contact.ContactSaveMode = ContactSaveMode.AlwaysSave;
                 manager.SaveContactToCollectionDb(Tracker.Current.Contact);
+                this.ReloadCurrentContact();
 
                 return GetContact(Sitecore.Analytics.XConnect.DataAccess.Constants.IdentifierSource, Tracker.Current.Contact.ContactId.ToString("N"), facetKey);
             }
