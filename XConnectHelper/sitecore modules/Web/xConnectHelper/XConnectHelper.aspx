@@ -16,22 +16,21 @@
             <% if (Messages.Count > 0)
                 { %>
             <div class="messages">
-                <td>
-					<ul>
-						<% foreach (var msg in Messages)
-                                          { %>
-							<li><%= msg %></li>
-						<% } %>
-					</ul>
-				</td>
+				<ul>
+					<% foreach (var msg in Messages)
+                                        { %>
+						<li><%= msg %></li>
+					<% } %>
+				</ul>
             </div>
             <% } %>
-            
-            <div class="box contactinfo">
+
+            <div class="box contactinfo">             
+
 				<h2>Contact Data</h2>
 				<table>
-                    <tr><td>Collection Status</td><td><%= Status.Collection %></td></tr>
-					<tr><td>Contact ID</td><td><%= Contact.ContactId %></td></tr>
+					<tr><td>Contact ID (Tracker)</td><td><%= Contact.TrackerContactId %></td></tr>
+                    <tr><td>Contact ID (XDB)</td><td><%= Contact.ContactId %></td></tr>
 					<tr><td>Firstname</td><td><%= Contact.Firstname %></td></tr>
 					<tr><td>Lastname</td><td><%= Contact.Lastname %></td></tr>
 					<tr>
@@ -62,19 +61,47 @@
 				<h2>Session Data</h2>
 				<table>				
 					<tr>
-						<td><label for="Identifier">Geo City & Country:</label></td>
+						<td><label>Geo City & Country:</label></td>
 						<td><%= SessionData.GeoCity %> / <%= SessionData.GeoCountry %></td>
 					</tr>
 					<tr>
-						<td><label for="Identifier">Channel:</label></td>
+						<td><label>Channel:</label></td>
 						<td><%= SessionData.Channel %></td>
 					</tr>
                     <tr>
-						<td><label for="Identifier">Engagement Value:</label></td>
+						<td><label>Engagement Value:</label></td>
 						<td><%= SessionData.EngagementValue %></td>
 					</tr>
+                    <% if (SessionData.ProfileData.Any()) { %>
+                    <tr>
+                        <td>Profiles:</td>
+						<td>
+                            <ul>
+                            <% foreach (var profile in SessionData.ProfileData)
+                                { %>
+                                <li><%= profile %></li>
+                            <%} %>
+                            </ul>
+						</td>
+                    </tr>
+                    <% } %>
 				</table>         
 			</div>
+
+            <div class="box">
+                <h2>Service Status</h2>
+
+                <% foreach (var service in Status)
+                    { %>
+                    <h3><%= service.ServiceName %><%= !service.Error ? ": OK" : string.Empty %></h3>
+					<ul>
+					<% foreach (var msg in service.Messages)
+                    { %>
+						<li><%= msg %></li>
+					<% } %>
+				</ul>
+				<% } %>                
+            </div>
 			
 			<div class="box contact-identify">
 				<h2>Contact identifiers</h2>
@@ -113,6 +140,7 @@
             
             <div class="box current-session">
 				<h2>Flush Session</h2>
+                <p>This will trigger processing immediately.</p>
 				<asp:Button runat="server" ID="FlushSession" OnClick="FlushSession_Click" Text="Flush current session" />
 			</div>     
             

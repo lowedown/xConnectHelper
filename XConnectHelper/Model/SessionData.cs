@@ -11,5 +11,6 @@ namespace Sitecore.SharedSource.XConnectHelper.Model
         public string GeoCity { get; set; }
         public string Channel { get; set; }
         public string EngagementValue { get; set; }
+        public IEnumerable<string> ProfileData { get; set; }
     }
 }

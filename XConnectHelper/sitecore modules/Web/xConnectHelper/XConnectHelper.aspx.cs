@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 using Sitecore.SharedSource.XConnectHelper.Impl;
+using System.Linq;
 
 namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
 {
@@ -14,7 +15,7 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
         private IXConnectService _helper;
         protected ContactData Contact;
         protected List<string> Messages = new List<string>();
-        protected ServiceStatus Status;
+        protected IList<XConnectValidator> Status;
         protected SessionData SessionData;
 
         protected override void OnInit(EventArgs e)
@@ -36,7 +37,10 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            InitPage();      
+            if (!IsPostBack)
+            {
+                InitPage();
+            }
         }
 
         protected void InitPage()
@@ -44,29 +48,38 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
             _helper = new XConnectService();
             _helper.DontTrackPageView();
 
-            Status = _helper.GetStatus();
             Contact = new ContactData();
             SessionData = _helper.SessionData;
 
+            var collectionValidator = new CollectionValidator("Collection", "xconnect.collection");
+
+            Status = new List<XConnectValidator>
+            {
+               collectionValidator,
+               new XConnectValidator("MA Operations", "xdb.marketingautomation.operations.client"),
+               new XConnectValidator("MA Reporting", "xdb.marketingautomation.reporting.client"),
+               new XConnectValidator("Referencedata", "xdb.referencedata.client")
+            };
+
+            foreach (var val in Status)
+            {
+                val.Validate();
+            }
+
+            if (collectionValidator.Error)
+            {
+                Messages.AddRange(collectionValidator.Messages);
+            }         
 
             if (!_helper.IsTrackerActive)
             {
                 Messages.Add("Tracker is not active! Check configuration and license.");                
             }
 
-            if (!Status.CollectionAvailable)
-            {
-                Messages.Add("Collection service is not available. Check connection string and certificate thumbprint.");
-            }
-
             // Only read contact from xConnect when it is available
-            if (Status.CollectionAvailable && _helper.IsTrackerActive)            
+            if (!collectionValidator.Error && _helper.IsTrackerActive)            
             {
                 Contact = _helper.Contact;
-            }
-
-            if (!IsPostBack)
-            {
                 Firstname.Text = Contact.Firstname;
                 Lastname.Text = Contact.Lastname;
                 EmailAddress.Text = Contact.PreferredEmail;
@@ -78,6 +91,7 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
         protected void FlushSession_Click(object sender, EventArgs e)
         {
             _helper.FlushSession();
+            Messages.Add("Session has been flushed");
             InitPage();
         }
 

@@ -4,7 +4,8 @@ namespace Sitecore.SharedSource.XConnectHelper.Model
 {
     public class ContactData
     {
-        public string ContactId { get; set; }        
+        public string ContactId { get; set; }
+        public string TrackerContactId { get; set; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public string PreferredEmail { get; set; }

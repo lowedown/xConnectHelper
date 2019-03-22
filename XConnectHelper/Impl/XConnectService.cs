@@ -1,4 +1,5 @@
 ﻿using Sitecore.Analytics;
+using Sitecore.Analytics.Model;
 using Sitecore.Analytics.XConnect.Facets;
 using Sitecore.Configuration;
 using Sitecore.SharedSource.XConnectHelper.ContactRepository;
@@ -11,7 +12,9 @@ using Sitecore.XConnect.Collection.Model;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Web;
 
 namespace Sitecore.SharedSource.XConnectHelper.Impl
@@ -24,7 +27,7 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
             {
                 var contact = new ContactData()
                 {
-                    ContactId = Tracker.Current.Contact.ContactId.ToString(),
+                    TrackerContactId = Tracker.Current.Contact.ContactId.ToString(),
                     Identifiers = Tracker.Current.Contact.Identifiers.Select(i => $"{i.Identifier} ({i.Source})"),
                 };
 
@@ -46,6 +49,13 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                     contact.PreferredEmail = emails.PreferredEmail.SmtpAddress;                    
                 }
 
+                contact.ContactId = "New. (Not persisted to XDB yet)";
+                if (!Tracker.Current.Contact.IsNew)
+                {
+                    var xConnectContact = repository.GetCurrentContact(EmailAddressList.DefaultFacetKey);
+                    contact.ContactId = xConnectContact?.Id.ToString();
+                }                
+
                 return contact;
             }
         }
@@ -59,13 +69,21 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                     return new SessionData();
                 }
 
+                var profileData = new List<string>();
+                foreach (var profileName in Tracker.Current.Interaction.Profiles.GetProfileNames())
+                {
+                    var profile = Tracker.Current.Interaction.Profiles[profileName];
+                    profileData.Add($"{profile.ProfileName} Count: {profile.Count} Pattern: {profile.PatternId} {profile.PatternLabel}");
+                }
+
                 return new SessionData()
                 {
                     Channel = Tracker.Current.Session.Interaction.ChannelId.ToString(),
                     EngagementValue = Tracker.Current.Session.Interaction.Value.ToString(),
                     GeoCity = Tracker.Current.Interaction.GeoData?.City,
-                    GeoCountry = Tracker.Current.Interaction.GeoData?.Country
-                };
+                    GeoCountry = Tracker.Current.Interaction.GeoData?.Country,
+                    ProfileData = profileData
+                };             
             }
         }
 
@@ -89,37 +107,7 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                 Tracker.Current?.Interaction?.CurrentPage?.Cancel();
                 Tracker.Current?.Session?.Interaction?.AcceptModifications();
             }
-        }
-
-        public ServiceStatus GetStatus()
-        {
-            var status = new ServiceStatus();
-
-            // Collection
-            try
-            {
-                using (XConnectClient client = SitecoreXConnectClientConfiguration.GetClient())
-                {
-                    var id = Tracker.Current.Contact.Identifiers.FirstOrDefault();
-                    client.Get<Contact>(new IdentifiedContactReference(id.Source, id.Identifier), new ContactExpandOptions());
-                        
-                    status.Collection = "OK";
-                    status.CollectionAvailable = true;
-                }
-            }
-            catch (XdbCollectionUnavailableException ex)
-            {
-                status.Collection = "NOT AVAILABLE " + ex.Message;
-                status.CollectionAvailable = false;
-            }
-            catch (Exception ex)
-            {
-                status.Collection = "FAILED " + ex.Message;
-                status.CollectionAvailable = false;
-            }
-
-            return status;
-        }
+        }        
 
         public void SetContactData(string firstName, string lastName, string email)
         {
@@ -166,12 +154,6 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
             if (!Settings.GetBoolSetting("Xdb.Tracking.Enabled", false))
             {
                 messages.Add("Setting 'Xdb.Tracking.Enabled' is false or not set");
-            }
-
-            ConnectionStringSettings collection = ConfigurationManager.ConnectionStrings["xconnect.collection"];
-            if (collection == null || string.IsNullOrWhiteSpace(collection.ConnectionString))
-            {
-                messages.Add("No 'xconnect.collection' connection string is defined");
             }
 
             return messages;

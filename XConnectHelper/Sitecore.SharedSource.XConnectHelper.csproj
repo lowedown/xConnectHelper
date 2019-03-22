@@ -107,6 +107,8 @@
     <Compile Include="ContactRepository\IContactRepository.cs" />
     <Compile Include="ContactRepository\XConnectContactRepository.cs" />
     <Compile Include="Impl\XConnectService.cs" />
+    <Compile Include="Impl\CollectionValidators.cs" />
+    <Compile Include="Impl\XConnectValidator.cs" />
     <Compile Include="IXConnectService.cs" />
     <Compile Include="Model\ContactData.cs" />
     <Compile Include="Model\ServiceStatus.cs" />
@@ -126,10 +128,10 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
-    <None Include="Properties\PublishProfiles\Release.pubxml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="sitecore modules\Web\xConnectHelper\XConnectHelper.aspx" />
   </ItemGroup>
