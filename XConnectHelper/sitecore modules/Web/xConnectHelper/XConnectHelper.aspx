@@ -98,6 +98,8 @@
 
             <div class="box">
                 <h2>Service Status</h2>
+                
+                <asp:Button runat="server" ID="CheckStatus" OnClick="CheckStatus_OnClick" Text="Check status"/>
 
                 <% foreach (var service in Status)
                     { %>
