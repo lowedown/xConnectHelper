@@ -108,11 +108,9 @@ namespace Sitecore.SharedSource.XConnectHelper.ContactRepository
 
                 return GetContact(Sitecore.Analytics.XConnect.DataAccess.Constants.IdentifierSource, Tracker.Current.Contact.ContactId.ToString("N"), facetKey);
             }
-            else
-            {
-                var id = Tracker.Current.Contact.Identifiers.FirstOrDefault();
-                return GetContact(id.Source, id.Identifier, facetKey);
-            }
+         
+            var id = Tracker.Current.Contact?.Identifiers.FirstOrDefault();
+            return id != null ? GetContact(id.Source, id.Identifier, facetKey) : null;
         }
 
         private bool IsContactIdentified(Sitecore.Analytics.Tracking.Contact trackingContact)
