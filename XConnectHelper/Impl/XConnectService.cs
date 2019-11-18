@@ -16,6 +16,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
+using Sitecore.Analytics.Core;
 
 namespace Sitecore.SharedSource.XConnectHelper.Impl
 {
@@ -87,10 +88,39 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                     EngagementValue = Tracker.Current.Session.Interaction.Value.ToString(),
                     GeoCity = Tracker.Current.Interaction.GeoData?.City,
                     GeoCountry = Tracker.Current.Interaction.GeoData?.Country,
-                    ProfileData = profileData
+                    ProfileData = profileData,
+                    RobotDetection =  GetBotTypeString(),
+                    CampaignId = Tracker.Current.Interaction.CampaignId.ToString()
                 };
             }
         }
+
+        private string GetBotTypeString()
+        {
+            var classification = Tracker.Current.Contact.System.Classification;
+            if (ContactClassification.IsMaliciousRobot(classification))
+            {
+                return $"Malicious robot ({classification})";
+            }
+
+            if (ContactClassification.IsAutoDetectedRobot(classification))
+            {
+                return $"Auto detected robot ({classification})";
+            }
+
+            if (ContactClassification.IsRobot(classification))
+            {
+                return $"Robot ({classification})";
+            }
+
+            if (ContactClassification.IsHuman(classification))
+            {
+                return $"Human ({classification})";
+            }
+
+            return string.Empty;
+        }
+    
 
         public bool IsTrackerActive
         {

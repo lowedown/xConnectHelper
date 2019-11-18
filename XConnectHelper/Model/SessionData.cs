@@ -12,5 +12,7 @@ namespace Sitecore.SharedSource.XConnectHelper.Model
         public string Channel { get; set; }
         public string EngagementValue { get; set; }
         public IEnumerable<string> ProfileData { get; set; }
+        public string RobotDetection { get; set; }
+        public string CampaignId { get; set; }
     }
 }

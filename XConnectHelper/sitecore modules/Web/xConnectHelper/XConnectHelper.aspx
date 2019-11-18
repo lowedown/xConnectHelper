@@ -72,7 +72,15 @@
 						<td><label>Engagement Value:</label></td>
 						<td><%= SessionData.EngagementValue %></td>
 					</tr>
-                    <% if (SessionData.ProfileData.Any()) { %>
+                    <tr>
+                        <td><label>Robot Detection:</label></td>
+                        <td><%= SessionData.RobotDetection %></td>
+                    </tr>
+                    <tr>
+                        <td><label>Campaign ID:</label></td>
+                        <td><%= SessionData.CampaignId %></td>
+                    </tr>
+                    <% if (SessionData.ProfileData != null && SessionData.ProfileData.Any()) { %>
                     <tr>
                         <td>Profiles:</td>
 						<td>
