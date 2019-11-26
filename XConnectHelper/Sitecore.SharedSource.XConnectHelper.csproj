@@ -61,6 +61,9 @@
       <HintPath>..\packages\Sitecore.Analytics.XConnect.NoReferences.9.0.180604\lib\NET462\Sitecore.Analytics.XConnect.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Sitecore.CES.DeviceDetection, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sitecore.CES.DeviceDetection.NoReferences.9.0.180604\lib\NET462\Sitecore.CES.DeviceDetection.dll</HintPath>
+    </Reference>
     <Reference Include="Sitecore.Kernel, Version=11.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Sitecore.Kernel.NoReferences.9.0.180604\lib\NET462\Sitecore.Kernel.dll</HintPath>
       <Private>False</Private>
@@ -111,6 +114,8 @@
     <Compile Include="Impl\XConnectValidator.cs" />
     <Compile Include="IXConnectService.cs" />
     <Compile Include="Model\ContactData.cs" />
+    <Compile Include="Model\EventEntry.cs" />
+    <Compile Include="Model\Profile.cs" />
     <Compile Include="Model\ServiceStatus.cs" />
     <Compile Include="Model\SessionData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -128,10 +133,9 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\PublishProfiles\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="sitecore modules\Web\xConnectHelper\XConnectHelper.aspx" />
   </ItemGroup>
