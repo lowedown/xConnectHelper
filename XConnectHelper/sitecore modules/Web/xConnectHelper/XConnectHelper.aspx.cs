@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 using Sitecore.SharedSource.XConnectHelper.Impl;
-using System.Linq;
 
 namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
 {
@@ -39,11 +38,7 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
         {
             _helper = new XConnectService();
             _helper.DontTrackPageView();
-
-            if (!IsPostBack)
-            {
-                InitPage();
-            }
+            InitPage();
         }
 
         protected void InitPage()
@@ -51,33 +46,15 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
             Contact = new ContactData();
             SessionData = _helper.SessionData;
 
-            var collectionValidator = new CollectionValidator("Collection", "xconnect.collection");
-
-            Status = new List<XConnectValidator>
-            {
-               collectionValidator,
-               new XConnectValidator("MA Operations", "xdb.marketingautomation.operations.client"),
-               new XConnectValidator("MA Reporting", "xdb.marketingautomation.reporting.client"),
-               new XConnectValidator("Referencedata", "xdb.referencedata.client")
-            };
-
-            foreach (var val in Status)
-            {
-                val.Validate();
-            }
-
-            if (collectionValidator.Error)
-            {
-                Messages.AddRange(collectionValidator.Messages);
-            }         
-
             if (!_helper.IsTrackerActive)
             {
                 Messages.Add("Tracker is not active! Check configuration and license.");                
             }
 
+            Status = new List<XConnectValidator>();
+
             // Only read contact from xConnect when it is available
-            if (!collectionValidator.Error && _helper.IsTrackerActive)            
+            if (_helper.IsTrackerActive)            
             {
                 Contact = _helper.Contact;
                 Firstname.Text = Contact.Firstname;
@@ -107,6 +84,29 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
             _helper.SetContactData(Firstname.Text, Lastname.Text, EmailAddress.Text);
             Messages.Add("Contact Data has been set");
             InitPage();
+        }
+
+        protected void CheckStatus_OnClick(object sender, EventArgs e)
+        {
+            var collectionValidator = new CollectionValidator("Collection", "xconnect.collection");
+
+            Status = new List<XConnectValidator>
+            {
+                collectionValidator,
+                new XConnectValidator("MA Operations", "xdb.marketingautomation.operations.client"),
+                new XConnectValidator("MA Reporting", "xdb.marketingautomation.reporting.client"),
+                new XConnectValidator("Referencedata", "xdb.referencedata.client")
+            };
+
+            foreach (var val in Status)
+            {
+                val.Validate();
+            }
+
+            if (collectionValidator.Error)
+            {
+                Messages.AddRange(collectionValidator.Messages);
+            }
         }
     }
 }

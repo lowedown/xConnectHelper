@@ -10,12 +10,12 @@ namespace Sitecore.SharedSource.XConnectHelper.Model
         public string Lastname { get; set; }
         public string PreferredEmail { get; set; }
         public IEnumerable<string> Emails { get; set; }
-        public IEnumerable<string> Identifiers { get; set; }
+        public IEnumerable<KeyValuePair<string, string>> Identifiers { get; set; }
 
         public ContactData()
         {
             Emails = new List<string>();
-            Identifiers = new List<string>();
+            Identifiers = new List<KeyValuePair<string, string>>();
         }
     }
 }

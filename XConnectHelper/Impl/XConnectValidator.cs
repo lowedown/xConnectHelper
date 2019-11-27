@@ -8,6 +8,7 @@ using System.Net.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using Sitecore.Configuration;
 
 namespace Sitecore.SharedSource.XConnectHelper.Impl
 {
@@ -108,7 +109,22 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                 return;
             }
 
+            // Warn if expiration date is within range
+            try
+            {
+                DateTime? validUntil = certCollection[0]?.NotAfter;
+                if (validUntil.HasValue)
+                {
+                    if (validUntil.Value > DateTime.Now.AddDays(-1 * Settings.GetIntSetting("xConnectHelper.WarnDaysBeforeCertExpiration", 90)))
+                    {
+                        Messages.Add($"WARN: Client certificate expires on: {validUntil.Value.ToShortDateString()}");
+                    }
+                }
+            }
+            catch (Exception)
+            {
 
+            }
 
             // Check private key access            
             try

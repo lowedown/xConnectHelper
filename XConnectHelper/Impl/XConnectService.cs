@@ -16,6 +16,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
+using Sitecore.Analytics.Core;
+using Sitecore.CES.DeviceDetection;
 
 namespace Sitecore.SharedSource.XConnectHelper.Impl
 {
@@ -28,7 +30,7 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                 var contact = new ContactData()
                 {
                     TrackerContactId = Tracker.Current.Contact.ContactId.ToString(),
-                    Identifiers = Tracker.Current.Contact.Identifiers.Select(i => $"{i.Identifier} ({i.Source})"),
+                    Identifiers = Tracker.Current.Contact.Identifiers.Select(i => new KeyValuePair<string, string>(i.Source, i.Identifier)),
                 };
 
                 var xConnectFacets = Tracker.Current.Contact.GetFacet<IXConnectFacets>("XConnectFacets");
@@ -39,21 +41,35 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                     contact.Lastname = personalInfoXConnect.LastName;
                 }
 
-                // The emails facet is not loaded into session by default. Therefore we load it from xConnect
-                var repository = new XConnectContactRepository();
-                var emails = repository.GetFacet<EmailAddressList>(repository.GetCurrentContact(EmailAddressList.DefaultFacetKey), EmailAddressList.DefaultFacetKey);
-
-                if (emails != null)
-                {
-                    contact.Emails = emails.Others.Select((k, v) => $"{k} ({v})");
-                    contact.PreferredEmail = emails.PreferredEmail.SmtpAddress;
-                }
-
                 contact.ContactId = "New. (Not persisted to XDB yet)";
                 if (!Tracker.Current.Contact.IsNew)
                 {
-                    var xConnectContact = repository.GetCurrentContact(EmailAddressList.DefaultFacetKey);
-                    contact.ContactId = xConnectContact?.Id.ToString();
+                    var repository = new XConnectContactRepository();
+                    Contact xConnectContact = null;
+
+                    try
+                    {
+                        xConnectContact = repository.GetCurrentContact(EmailAddressList.DefaultFacetKey);
+                    }
+                    catch (XdbCollectionUnavailableException ex)
+                    {
+                        
+                    }
+
+                    if (xConnectContact != null)
+                    {
+                        contact.ContactId = xConnectContact?.Id.ToString();
+
+                        // The emails facet is not loaded into session by default. Therefore we load it from xConnect
+                        var emails =
+                            repository.GetFacet<EmailAddressList>(xConnectContact, EmailAddressList.DefaultFacetKey);
+
+                        if (emails != null)
+                        {
+                            contact.Emails = emails.Others.Select((k, v) => $"{k} ({v})");
+                            contact.PreferredEmail = emails.PreferredEmail.SmtpAddress;
+                        }
+                    }
                 }
 
                 return contact;
@@ -69,28 +85,77 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                     return new SessionData();
                 }
 
-                var profileData = new List<string>();
+                var profileData = new List<Profile>();
                 foreach (var profileName in Tracker.Current.Interaction.Profiles.GetProfileNames())
                 {
                     var profile = Tracker.Current.Interaction.Profiles[profileName];
-                    profileData.Add($"Name: {profile.ProfileName}");
-                    profileData.Add($"Pattern: {profile.PatternLabel} ({profile.PatternId})");
-                    foreach (var value in profile)
+
+                    profileData.Add(new Profile()
                     {
-                        profileData.Add($"{value.Key}: {value.Value}");
-                    }
+                        Name = profile.ProfileName,
+                        Pattern = $"{profile.PatternLabel}",
+                        Values = profile.Select(p => new KeyValuePair<string, double>(p.Key, p.Value))
+                    });
                 }
 
-                return new SessionData()
+                var currentPage = Tracker.Current.Interaction.CurrentPage;
+
+                var data = new SessionData()
                 {
                     Channel = Tracker.Current.Session.Interaction.ChannelId.ToString(),
                     EngagementValue = Tracker.Current.Session.Interaction.Value.ToString(),
                     GeoCity = Tracker.Current.Interaction.GeoData?.City,
                     GeoCountry = Tracker.Current.Interaction.GeoData?.Country,
-                    ProfileData = profileData
+                    ProfileData = profileData,
+                    RobotDetection =  GetBotTypeString(),
+                    CampaignId = Tracker.Current.Interaction.CampaignId.ToString(),
+                    Visits = Tracker.Current.Interaction.ContactVisitIndex,
+                    PagesInCurrentVisit = Tracker.Current.Interaction.PageCount,
+                    Referrer = Tracker.Current.Interaction.Referrer,
+                    GoalsCount = currentPage?.PageEvents.Count(e => e.IsGoal) ?? 0,
+                    PageEventsCount = currentPage?.PageEvents.Count(e => !e.IsGoal) ?? 0,
+                    Goals = currentPage?.PageEvents.Where(e => e.IsGoal).Take(10).Select(e => new EventEntry() { EngagementValue = e.Value, Timestamp = e.DateTime, Title = e.Name}),
+                    PageEvents = currentPage?.PageEvents.Where(e => !e.IsGoal).Take(10).Select(e => new EventEntry() { EngagementValue = e.Value, Timestamp = e.DateTime, Title = e.Name })
                 };
+                
+                if (DeviceDetectionManager.IsEnabled && DeviceDetectionManager.IsReady && !string.IsNullOrEmpty(Tracker.Current.Interaction.UserAgent))
+                {
+                    var deviceData = DeviceDetectionManager.GetDeviceInformation(Tracker.Current.Interaction.UserAgent);
+
+                    data.Device = deviceData.DeviceModelName;
+                    data.Browser = deviceData.Browser;
+                };
+
+                return data;
             }
         }
+
+        private string GetBotTypeString()
+        {
+            var classification = Tracker.Current.Contact.System.Classification;
+            if (ContactClassification.IsMaliciousRobot(classification))
+            {
+                return $"Malicious robot ({classification})";
+            }
+
+            if (ContactClassification.IsAutoDetectedRobot(classification))
+            {
+                return $"Auto detected robot ({classification})";
+            }
+
+            if (ContactClassification.IsRobot(classification))
+            {
+                return $"Robot ({classification})";
+            }
+
+            if (ContactClassification.IsHuman(classification))
+            {
+                return $"Human ({classification})";
+            }
+
+            return string.Empty;
+        }
+    
 
         public bool IsTrackerActive
         {
