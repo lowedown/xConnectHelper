@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>xConnect Helper</title>
-	<link rel="Stylesheet" type="text/css" href="bootstrap-grid.min.css">
+	<link rel="Stylesheet" type="text/css" href="bootstrap.min.css">
     <link rel="Stylesheet" type="text/css" href="xConnectHelper.css">
 	
 </head>
@@ -27,124 +27,150 @@
             </div>
             <% } %>
 			
-			<div class="row">
+			<div class="card-deck">
 				
-				<div class="col"> 
-					<h2>Personal Information</h2>
-					
-					<table>
-						<tr><td>Contact ID (Tracker)</td><td><%= Contact.TrackerContactId %></td></tr>
-						<tr><td>Contact ID (XDB)</td><td><%= Contact.ContactId %></td></tr>
-						<tr><td>Firstname</td><td><%= Contact.Firstname %></td></tr>
-						<tr><td>Lastname</td><td><%= Contact.Lastname %></td></tr>
-						<tr>
-							<td>Identifiers</td>
-							<td>
-								<ul>
-									<% foreach(var id in Contact.Identifiers) { %>
-										<li><%= id %></li>
+				<div class="mb-3 card box-shadow"> 
+				
+					<div class="card-header">					
+						<h4>Personal Information</h4>
+					</div>
+					<div class="card-body">					
+						<table class="table table-striped table-sm">
+							<tr><th>Contact ID (Tracker)</th><td><%= Contact.TrackerContactId %></td></tr>
+							<tr><th>Contact ID (XDB)</th><td><%= Contact.ContactId %></td></tr>
+							<tr><th>Firstname</th><td><%= Contact.Firstname %></td></tr>
+							<tr><th>Lastname</th><td><%= Contact.Lastname %></td></tr>							
+							<tr>
+								<th>Emails</th>
+								<td>
+									<% if (Contact.Emails.Any()) { %>
+									<ul>
+										<li><%= Contact.PreferredEmail %> (Preferred)</li>
+										<% foreach(var email in Contact.Emails) { %>
+											<li><%= email %></li>
+										<% } %>
+									</ul>
 									<% } %>
-								</ul>
-							</td>
-						</tr>
-						<tr>
-							<td>Emails</td>
-							<td>
-								<ul>
-									<li><%= Contact.PreferredEmail %> (Preferred)</li>
-									<% foreach(var email in Contact.Emails) { %>
-										<li><%= email %></li>
-									<% } %>
-								</ul>
-							</td>
-						</tr>
-					</table>
+								</td>
+							</tr>
+						</table>
+						
+						<h5>Identifiers</h5>
+						<table class="table table-striped table-sm">
+							<% foreach(var id in Contact.Identifiers) { %>
+								<tr><th><%= id.Key %></th><td><%= id.Value %></td></tr>
+							<% } %>
+						</table>
+					</div>
 				</div>
 				
-				<div class="col"> 
-					<h2>Engagement</h2>
+				<div class="mb-3 card box-shadow"> 
+					
+					<div class="card-header">					
+						<h4>Engagement</h4>
+					</div>
+					<div class="card-body">
 				
-					<table>
-						<tr>
-							<td><label>Engagement Value:</label></td>
-							<td>♥<%= SessionData.EngagementValue %></td>
-						</tr>
-						<tr>
-							<td><label>Page views in this visit:</label></td>
-							<td><%= SessionData.PagesInCurrentVisit %></td>
-						</tr>
-						<tr>
-							<td><label>Visits to the site:</label></td>
-							<td><%= SessionData.Visits %></td>
-						</tr>
-					</table>
+						<table class="table table-striped table-sm">
+							<tr>
+								<th>Engagement Value:</th>
+								<td>♥<%= SessionData.EngagementValue %></td>
+							</tr>
+							<tr>
+								<th>Page views in this visit:</th>
+								<td><%= SessionData.PagesInCurrentVisit %></td>
+							</tr>
+							<tr>
+								<th>Visits to the site:</th>
+								<td><%= SessionData.Visits %></td>
+							</tr>
+						</table>
+					</div>
 				
+				</div>
+				
+				<div class="mb-3 card box-shadow"> 
+					
+					<div class="card-header">					
+						<h4>Device</h4>
+					</div>
+					<div class="card-body">					
+						<table class="table table-striped table-sm">
+							<tr><th>Geo City & Country:</th><td><%= SessionData.GeoCity %> / <%= SessionData.GeoCountry %></td></tr>
+							<tr><th>Device</th><td><%= SessionData.Device %></td></tr>
+							<tr><th>Browser</th><td><%= SessionData.Browser %></td></tr>
+							<tr><th>Robot Classification</th><td><%= SessionData.RobotDetection %></td></tr>
+						</table>
+					</div>
 				</div>
 				
 				
 			</div>
 			
-			<div class="row">
-				<div class="col"> 
-					<h2>Device</h2>
-					
-					<table>
-						<tr><td>Geo City & Country:</td><td><%= SessionData.GeoCity %> / <%= SessionData.GeoCountry %></td></tr>
-						<tr><td>Device</td><td><%= SessionData.Device %></td></tr>
-						<tr><td>Browser</td><td><%= SessionData.Browser %></td></tr>
-						<tr><td>Robot Classification</td><td><%= SessionData.RobotDetection %></td></tr>
-					</table>
-				</div>
+			<div class="card-deck">
 				
-				<div class="col"> 
-					<h2>Referral</h2>
+				
+				<div class="mb-3 card box-shadow"> 
 					
-					<table>
-						<tr><td><label>Channel:</label></td><td><%= SessionData.Channel %></td></tr>
-						<tr><td><label>Campaign:</label></td><td><%= SessionData.CampaignId %></td></tr>
-						<tr><td><label>Referrer:</label></td><td><%= SessionData.Referrer %></td></tr>
-					</table>
+					<div class="card-header">					
+						<h4>Referral</h4>
+					</div>
+					<div class="card-body">					
+						<table  class="table table-striped table-sm">
+							<tr><td><label>Channel:</label></td><td><%= SessionData.Channel %></td></tr>
+							<tr><td><label>Campaign:</label></td><td><%= SessionData.CampaignId %></td></tr>
+							<tr><td><label>Referrer:</label></td><td><%= SessionData.Referrer %></td></tr>
+						</table>
+					</div>
 				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col"> 
-					<h2>Events</h2>
+		
+				<div class="mb-3 card box-shadow"> 
+					
+					<div class="card-header">					
+						<h4>Events</h4>
+					</div>
+					<div class="card-body">	
 					
 					
-					<h3>Goals (<%= SessionData.GoalsCount %>)</h3>
-					
-					<% if(SessionData.Goals != null) { %>
-					<table>		
-						<% foreach (var pageEvent in SessionData.Goals)
-							{ %>						
-							<tr>
-								<td><%= pageEvent.Timestamp.ToShortTimeString() %>/td>
-								<td><%= pageEvent.Title %></td>
-								<td>♥<%= pageEvent.EngagementValue %></td>
-							</tr>
-						<%} %>
-					</table>
-					<% } %>
-					
-					<h3>Page Events (<%= SessionData.PageEventsCount %>)</h3>
-					
-					<% if(SessionData.PageEvents != null) { %>
-					<table>		
-						<% foreach (var pageEvent in SessionData.PageEvents)
-							{ %>						
-							<tr>
-								<td><%= pageEvent.Timestamp.ToShortDateString() %> <%= pageEvent.Timestamp.ToShortTimeString() %></td>
-								<td><%= pageEvent.Title %></td>
-								<td>♥<%= pageEvent.EngagementValue %></td>
-							</tr>
-						<%} %>
-					</table>
-					<% } %>
+						<strong>Goals (<%= SessionData.GoalsCount %>)</strong>
+						
+						<% if(SessionData.Goals != null) { %>
+						<table class="table table-striped table-sm">		
+							<% foreach (var pageEvent in SessionData.Goals)
+								{ %>						
+								<tr>
+									<td><%= pageEvent.Timestamp.ToShortTimeString() %>/td>
+									<td><%= pageEvent.Title %></td>
+									<td>♥<%= pageEvent.EngagementValue %></td>
+								</tr>
+							<%} %>
+						</table>
+						<% } %>
+						
+						<hr/>
+						<strong>Page Events (<%= SessionData.PageEventsCount %>)</strong>
+						
+						<% if(SessionData.PageEvents != null) { %>
+						<table class="table table-striped table-sm">		
+							<% foreach (var pageEvent in SessionData.PageEvents)
+								{ %>						
+								<tr>
+									<td><%= pageEvent.Timestamp.ToShortDateString() %> <%= pageEvent.Timestamp.ToShortTimeString() %></td>
+									<td><%= pageEvent.Title %></td>
+									<td>♥<%= pageEvent.EngagementValue %></td>
+								</tr>
+							<%} %>
+						</table>
+						<% } %>
+					</div>
 					
 				</div>
-				<div class="col"> 
-					<h2>Profiling</h2>
+				<div class="mb-3 card box-shadow"> 
+					
+					<div class="card-header">					
+						<h4>Profiling</h4>
+					</div>
+					<div class="card-body">	
 							
 						<% if (SessionData.ProfileData != null && SessionData.ProfileData.Any()) { %>
                             
@@ -152,11 +178,11 @@
                             <% foreach (var profile in SessionData.ProfileData)
                                { %>
                                 
-                                <h3><%= profile.Name %></h3>
+                                <h5><%= profile.Name %></h5>
                                 
-                                Pattern Match: <%= profile.Pattern == "()" ? "no match" : profile.Pattern %>
+                                Pattern Match: <strong><%= profile.Pattern == "" ? "no match" : profile.Pattern %></strong>
                             
-                                <table>
+                                <table class="table table-striped table-sm">
                                     <% foreach (var val in profile.Values)
                                        { %>
                                     
@@ -170,73 +196,111 @@
                                 
                             <%} %>
 						<% } %>
+						
+					</div>
 					
 				</div>
 				
 				
 			</div>
-			<div class="row">
-				<div class="col"> 
-					<h2>Service Status</h2>
+			<div class="card-deck">
+				<div class="mb-3 card box-shadow"> 
+				
+					<div class="card-header">					
+						<h4>Service Status</h4>
+					</div>
+					<div class="card-body">	
+				
+					
 					<p>Check the status of the connected xConnect service (Certificates, Connection Strings etc.)</p>
 					
-					<asp:Button runat="server" ID="CheckStatus" OnClick="CheckStatus_OnClick" Text="Check status"/>
+					<asp:Button runat="server"  CssClass="btn" ID="CheckStatus" OnClick="CheckStatus_OnClick" Text="Check status"/>
+                        
+                    <br/>
 
+					<table class="table table-striped table-sm">
 					<% foreach (var service in Status)
 						{ %>
-						<h3><%= service.ServiceName %><%= !service.Error ? ": OK" : ": ERROR" %></h3>
-						<ul>
-						<% foreach (var msg in service.Messages)
-						{ %>
-							<li><%= msg %></li>
-						<% } %>
-					</ul>
+						<tr>
+							<th><%= service.ServiceName %></th>
+							<td><%= !service.Error ? "OK" : "ERROR" %></td>
+							<td>
+								<ul>
+								<% foreach (var msg in service.Messages)
+								{ %>
+									<li><%= msg %></li>
+								<% } %>
+								</ul>
+							</td>
+						</tr>					
 					<% } %>  
+					</table>
+					
+					</div>
 				</div>
 				
-				<div class="col"> 
-					<h2>Contact identifiers</h2>
-					<table>				
+				<div class="mb-3 card box-shadow"> 
+					
+					<div class="card-header">					
+						<h4>Contact identifiers</h4>
+					</div>
+					<div class="card-body">	
+					
+					<table class="table table-sm">				
 						<tr>
 							<td><label for="Identifier">Identifier:</label></td>
-							<td><asp:Textbox runat="server" ID="Identifier" /></td>
+							<td><asp:Textbox CssClass="form-control" runat="server" ID="Identifier" /></td>
 						</tr>
 						<tr>
 							<td><label for="IdentifierSource">Identifier Source:</label></td>
-							<td><asp:Textbox runat="server" ID="IdentifierSource" Text="xConnectHelper" /></td>
+							<td><asp:Textbox CssClass="form-control" runat="server" ID="IdentifierSource" Text="xConnectHelper" /></td>
 						</tr>
 					</table>
 					
-					<asp:Button runat="server" OnClick="IdentifyContact_Click" Text="Identify current contact" />  
+					<asp:Button runat="server"  CssClass="btn" OnClick="IdentifyContact_Click" Text="Identify current contact" />  
+					
+					</div>
 				</div>
 			</div>
 			
-			<div class="row">
-				
-				
+			<div class="card-deck">		
 
-				<div class="col"> 
-					<h2>Contact Data</h2>
-					<table>				
+				<div class="mb-3 card box-shadow"> 
+					
+					<div class="card-header">					
+						<h4>Contact Data</h4>
+					</div>
+					<div class="card-body">
+					
+					<table class="table table-sm">				
 						<tr>
 							<td><label for="Firstname">Firstname</label></td>
-							<td><asp:Textbox runat="server" ID="Firstname" /></td>
+							<td><asp:Textbox runat="server" CssClass="form-control" ID="Firstname" /></td>
 						</tr>
 						<tr>
 							<td><label for="Lastname">Lastname</label></td>
-							<td><asp:Textbox runat="server" ID="Lastname" /></td>
+							<td><asp:Textbox runat="server" CssClass="form-control" ID="Lastname" /></td>
 						</tr>
 						<tr>
 							<td><label for="EmailAddress">Email</label></td>
-							<td><asp:Textbox runat="server" ID="EmailAddress" /></td>
+							<td><asp:Textbox runat="server" CssClass="form-control" ID="EmailAddress" /></td>
 						</tr>
 					</table>
-					<asp:Button runat="server" OnClick="SetContactData_Click" Text="Set contact data" /> 
+					<asp:Button runat="server" CssClass="btn" OnClick="SetContactData_Click" Text="Set contact data" /> 
+					
+					</div>
 				</div>
-				<div class="col"> 
-					<h2>Flush Session</h2>
+				<div class="mb-3 card box-shadow"> 
+				
+					<div class="card-header">					
+						<h4>Flush Session</h4>
+					</div>
+					<div class="card-body">	
+				
 					<p>This will trigger processing immediately.</p>
-					<asp:Button runat="server" ID="FlushSession" OnClick="FlushSession_Click" Text="Flush current session" />
+					<asp:Button runat="server" ID="FlushSession" CssClass="btn btn-primary" OnClick="FlushSession_Click" Text="Flush current session" />
+					
+					</div>
 				</div>
 			</div>   
             

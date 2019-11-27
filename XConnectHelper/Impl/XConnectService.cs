@@ -30,7 +30,7 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                 var contact = new ContactData()
                 {
                     TrackerContactId = Tracker.Current.Contact.ContactId.ToString(),
-                    Identifiers = Tracker.Current.Contact.Identifiers.Select(i => $"{i.Identifier} ({i.Source})"),
+                    Identifiers = Tracker.Current.Contact.Identifiers.Select(i => new KeyValuePair<string, string>(i.Source, i.Identifier)),
                 };
 
                 var xConnectFacets = Tracker.Current.Contact.GetFacet<IXConnectFacets>("XConnectFacets");
@@ -93,7 +93,7 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                     profileData.Add(new Profile()
                     {
                         Name = profile.ProfileName,
-                        Pattern = $"{profile.PatternLabel} ({profile.PatternId})",
+                        Pattern = $"{profile.PatternLabel}",
                         Values = profile.Select(p => new KeyValuePair<string, double>(p.Key, p.Value))
                     });
                 }
