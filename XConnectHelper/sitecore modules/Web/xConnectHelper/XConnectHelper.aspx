@@ -43,14 +43,12 @@
 							<tr>
 								<th>Emails</th>
 								<td>
-									<% if (Contact.Emails.Any()) { %>
 									<ul>
 										<li><%= Contact.PreferredEmail %> (Preferred)</li>
 										<% foreach(var email in Contact.Emails) { %>
 											<li><%= email %></li>
 										<% } %>
 									</ul>
-									<% } %>
 								</td>
 							</tr>
 						</table>
