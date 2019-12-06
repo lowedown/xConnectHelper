@@ -146,7 +146,7 @@
 							<% foreach (var pageEvent in SessionData.Goals)
 								{ %>						
 								<tr>
-									<td><%= pageEvent.Timestamp.ToShortTimeString() %>/td>
+									<td><%= pageEvent.Timestamp.ToShortDateString() %> <%= pageEvent.Timestamp.ToShortTimeString() %></td>
 									<td><%= pageEvent.Title %></td>
 									<td>♥<%= pageEvent.EngagementValue %></td>
 								</tr>
