@@ -115,7 +115,7 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                 DateTime? validUntil = certCollection[0]?.NotAfter;
                 if (validUntil.HasValue)
                 {
-                    if (validUntil.Value > DateTime.Now.AddDays(Settings.GetIntSetting("xConnectHelper.WarnDaysBeforeCertExpiration", 90)))
+                    if (validUntil.Value < DateTime.Now.AddDays(Settings.GetIntSetting("xConnectHelper.WarnDaysBeforeCertExpiration", 90)))
                     {
                         Messages.Add($"WARN: Client certificate expires on: {validUntil.Value.ToShortDateString()}");
                     }
