@@ -94,13 +94,28 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
         {
             var collectionValidator = new CollectionValidator("Collection", "xconnect.collection");
 
-            Status = new List<XConnectValidator>
+            Status = new List<XConnectValidator>();
+
+            if (Settings.GetBoolSetting("xConnectHelper.Status.Check.Collection", false))
             {
-                collectionValidator,
-                new XConnectValidator("MA Operations", "xdb.marketingautomation.operations.client"),
-                new XConnectValidator("MA Reporting", "xdb.marketingautomation.reporting.client"),
-                new XConnectValidator("Referencedata", "xdb.referencedata.client")
-            };
+                Status.Add(collectionValidator);
+            }
+
+            if (Settings.GetBoolSetting("xConnectHelper.Status.Check.MAOperations", false))
+            {
+                Status.Add(new XConnectValidator("MA Operations", "xdb.marketingautomation.operations.client"));
+            }
+
+            if (Settings.GetBoolSetting("xConnectHelper.Status.Check.MAReporting", false))
+            {
+                Status.Add(new XConnectValidator("MA Reporting", "xdb.marketingautomation.reporting.client"));
+            }
+
+            if (Settings.GetBoolSetting("xConnectHelper.Status.Check.ReferenceData", false))
+            {
+                Status.Add(new XConnectValidator("Referencedata", "xdb.referencedata.client"));
+            }
+
 
             foreach (var val in Status)
             {
