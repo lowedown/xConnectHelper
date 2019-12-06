@@ -15,10 +15,10 @@ This helper page provides the following capabilities:
 - Flush current session for immediate processing
 
 Screenshot 1: Tracking data of current session
-![Screenshot of xConnectHelper](doc/screenshot-1.png?raw=true "xConnect Helper")
+![Screenshot of xConnectHelper](doc/screenshot-1.PNG?raw=true "xConnect Helper")
 
 Screenshot 2: Status checker result
-![Screenshot of xConnectHelper](doc/screenshot-2.png?raw=true "xConnect Helper")
+![Screenshot of xConnectHelper](doc/screenshot-2.PNG?raw=true "xConnect Helper")
 
 ## How to use
 
