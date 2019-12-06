@@ -13,7 +13,16 @@
     <form id="form1" runat="server">	
 		
         <div class="container">
-			<h1>xConnect Helper</h1>
+			
+			<div class="row">			
+				<div class="col">
+					<h1>xConnect Helper</h1>
+				</div>
+					
+				<div class="col" style="text-align:right;">				
+					<img src="logo.png" class="logo" width="80" height="80" alt="xConnect Helper" title="xConnect Helper"/>
+				</div>
+			</div>
 		
             <% if (Messages.Count > 0)
                 { %>
@@ -32,9 +41,9 @@
 				<div class="mb-3 card box-shadow"> 
 				
 					<div class="card-header">					
-						<h4>Personal Information</h4>
+						<h4>General Information</h4>
 					</div>
-					<div class="card-body">					
+					<div class="card-body">							
 						<table class="table table-striped table-sm">
 							<tr><th>Contact ID (Tracker)</th><td><%= Contact.TrackerContactId %></td></tr>
 							<tr><th>Contact ID (XDB)</th><td><%= Contact.ContactId %></td></tr>
