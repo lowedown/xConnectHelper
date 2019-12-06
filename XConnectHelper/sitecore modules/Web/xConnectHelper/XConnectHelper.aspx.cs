@@ -57,9 +57,13 @@ namespace Sitecore.SharedSource.XConnectHelper.sitecore_modules.Web.xConnect
             if (_helper.IsTrackerActive)            
             {
                 Contact = _helper.Contact;
-                Firstname.Text = Contact.Firstname;
-                Lastname.Text = Contact.Lastname;
-                EmailAddress.Text = Contact.PreferredEmail;
+
+                if (!IsPostBack)
+                {
+                    Firstname.Text = Contact.Firstname;
+                    Lastname.Text = Contact.Lastname;
+                    EmailAddress.Text = Contact.PreferredEmail;
+                }
             }
 
             Messages.AddRange(_helper.ValidateConfig());
