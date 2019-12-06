@@ -1,22 +1,39 @@
 # xConnectHelper
-This helper page allows you to test if your xConnect functionality is working as expected.
 
-![Screenshot of xConnectHelper](doc/screenshot.png?raw=true "Screenshot")
+![Screenshot of xConnectHelper](doc/logo.png?raw=true "xConnect Helper")
 
+*Your Swiss Army Knife for debugging xConnect.*
 
 ## How does it help? 
-After installing, you can access the page through 
+
+This helper page provides the following capabilities:
+
+- Insight into current tracking session data
+- Show goals and events that were triggered
+- Status checker that validates your xConnect setup (connections, certificates, settings)
+- Set identifiers and basic contact data in the current session
+- Flush current session for immediate processing
+
+Screenshot 1: Tracking data of current session
+![Screenshot of xConnectHelper](doc/screenshot-1.png?raw=true "xConnect Helper")
+
+Screenshot 2: Status checker result
+![Screenshot of xConnectHelper](doc/screenshot-2.png?raw=true "xConnect Helper")
+
+## How to use
+
+Once installed, you can access the helper page through:
+
 
     /sitecore%20modules/Web/xConnectHelper/xConnectHelper.aspx?key=<yourkey>
 
-On this page you can...
 
-- Get status information on the current Tracker config
-- Get Status information on Collection, Marketing Automation and Reference Data services
-- View basic contact facets
-- Set one or multiple identifiers for the current contact
-- Set basic contact facets
-- Flush current session which immediately triggers processing
+## How to install
+1. Download [Release ZIP](https://github.com/lowedown/xConnectHelper/releases/latest) and integrate into your build
+2. Set a hard-to guess key in App_Config/Modules/xConnectHelper/xConnectHelper.config
+3. Access your page through */sitecore%20modules/Web/xConnectHelper/xConnectHelper.aspx?key=<yourkey>*
+
+**Important Note**: Because this tool is made to debug current contacts and interactions in-session, it needs to be accessible on Content Delivery instances. The helper page is protected by a key that you need to define during installation. Make sure this is sufficcient for your organisation and if not, you need to meet appropriate measures to prevent access to this page i.E. IP-blocking through web.config.
 
 ### Some possible use cases:
 ##### I want to check the xConnect connection
@@ -26,18 +43,14 @@ xConnect helper validates:
 - https access to Services
 - Server certificate validity
 - Client certificate validity and read rights to private key
+- Warning if client certificate expires soon
 
 ##### I want to check if data is written to the collection and reporting db:
 Interact with your website and then hit **flush current session**. Processing of your contact and interactions will immediately start and data should be visible in the databases within seconds.
 ##### I want to test contact search / experience profile:
 The experience profile manager only lists identified contacts. You can set an identifier for your contact, then flush session. Your contact should show in the list within a few seconds.
 
-## How to install
-1. Download [Release ZIP](https://github.com/lowedown/xConnectHelper/releases/latest) and integrate into your build
-2. Set a hard-to guess key in App_Config/Modules/xConnectHelper/xConnectHelper.config
-3. Access your page through */sitecore%20modules/Web/xConnectHelper/xConnectHelper.aspx?key=<yourkey>*
 
-**Important Note**: Because this tool is made to debug current contacts and interactions in-session, it can not be used as a regular Sitecore admin page and is therefore publicly accessible protected only by your access key. You are responsible for setting appropriate measures to regulate access to this page.
 
 ## Supported Sitecore versions
-This release was tested with Sitecore *9.0 update-2* and *9.1 Initial*. It will not support any lower releases because of API changes.
+This release was tested with Sitecore *9.0 update-2*, *9.1* and *9.2*. It will not support any lower releases because of API changes.
