@@ -1,22 +1,16 @@
 ﻿using Sitecore.Analytics;
-using Sitecore.Analytics.Model;
 using Sitecore.Analytics.XConnect.Facets;
 using Sitecore.Configuration;
 using Sitecore.SharedSource.XConnectHelper.ContactRepository;
 using Sitecore.SharedSource.XConnectHelper.Helper;
 using Sitecore.SharedSource.XConnectHelper.Model;
 using Sitecore.XConnect;
-using Sitecore.XConnect.Client;
-using Sitecore.XConnect.Client.Configuration;
 using Sitecore.XConnect.Collection.Model;
-using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using Sitecore.Analytics.Core;
+using System.Web.Mvc;
 using Sitecore.CES.DeviceDetection;
 
 namespace Sitecore.SharedSource.XConnectHelper.Impl
@@ -117,10 +111,13 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                     Goals = currentPage?.PageEvents.Where(e => e.IsGoal).Take(10).Select(e => new EventEntry() { EngagementValue = e.Value, Timestamp = e.DateTime, Title = e.Name}),
                     PageEvents = currentPage?.PageEvents.Where(e => !e.IsGoal).Take(10).Select(e => new EventEntry() { EngagementValue = e.Value, Timestamp = e.DateTime, Title = e.Name })
                 };
+
+                //Sitecore.CES.DeviceDetection.DeviceDetectionManager
+                var deviceDetectionManager = DependencyResolver.Current.GetService<DeviceDetectionManagerBase>();
                 
-                if (DeviceDetectionManager.IsEnabled && DeviceDetectionManager.IsReady && !string.IsNullOrEmpty(Tracker.Current.Interaction.UserAgent))
+                if (deviceDetectionManager != null && deviceDetectionManager.IsEnabled && deviceDetectionManager.IsReady && !string.IsNullOrEmpty(Tracker.Current.Interaction.UserAgent))
                 {
-                    var deviceData = DeviceDetectionManager.GetDeviceInformation(Tracker.Current.Interaction.UserAgent);
+                    var deviceData = deviceDetectionManager.GetDeviceInformation(Tracker.Current.Interaction.UserAgent);
 
                     data.Device = deviceData.DeviceModelName;
                     data.Browser = deviceData.Browser;
