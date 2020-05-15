@@ -41,3 +41,7 @@ table {
     border: 1px solid transparent;
     border-radius: .25rem;
 }
+
+.auto-scroll {
+    overflow: auto;
+}

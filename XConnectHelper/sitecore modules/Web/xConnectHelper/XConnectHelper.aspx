@@ -216,7 +216,7 @@
 					<div class="card-header">					
 						<h4>Service Status</h4>
 					</div>
-					<div class="card-body">	
+					<div class="card-body auto-scroll">	
 				
 					
 					<p>Check the status of the connected xConnect service (Certificates, Connection Strings etc.)</p>
