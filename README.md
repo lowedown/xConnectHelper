@@ -54,7 +54,7 @@ The experience profile manager only lists identified contacts. You can set an id
 
 
 ## Supported Sitecore versions
-This release was tested with Sitecore *9.0 update-2*, *9.1* and *9.2*. It will not support any lower releases because of API changes.
+This release was tested with Sitecore *9.0 update-2*, *9.1*, *9.2* and *9.3*. It will not support any lower releases because of API changes.
 
 
 ---
