@@ -1,5 +1,7 @@
 ﻿using Sitecore.Analytics;
+using Sitecore.Analytics.Core;
 using Sitecore.Analytics.XConnect.Facets;
+using Sitecore.CES.DeviceDetection;
 using Sitecore.Configuration;
 using Sitecore.SharedSource.XConnectHelper.ContactRepository;
 using Sitecore.SharedSource.XConnectHelper.Helper;
@@ -9,9 +11,7 @@ using Sitecore.XConnect.Collection.Model;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Sitecore.Analytics.Core;
 using System.Web.Mvc;
-using Sitecore.CES.DeviceDetection;
 
 namespace Sitecore.SharedSource.XConnectHelper.Impl
 {
@@ -47,7 +47,7 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                     }
                     catch (XdbCollectionUnavailableException ex)
                     {
-                        
+
                     }
 
                     if (xConnectContact != null)
@@ -101,20 +101,20 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
                     GeoCity = Tracker.Current.Interaction.GeoData?.City,
                     GeoCountry = Tracker.Current.Interaction.GeoData?.Country,
                     ProfileData = profileData,
-                    RobotDetection =  GetBotTypeString(),
+                    RobotDetection = GetBotTypeString(),
                     CampaignId = Tracker.Current.Interaction.CampaignId.ToString(),
                     Visits = Tracker.Current.Interaction.ContactVisitIndex,
                     PagesInCurrentVisit = Tracker.Current.Interaction.PageCount,
                     Referrer = Tracker.Current.Interaction.Referrer,
                     GoalsCount = currentPage?.PageEvents.Count(e => e.IsGoal) ?? 0,
                     PageEventsCount = currentPage?.PageEvents.Count(e => !e.IsGoal) ?? 0,
-                    Goals = currentPage?.PageEvents.Where(e => e.IsGoal).Take(10).Select(e => new EventEntry() { EngagementValue = e.Value, Timestamp = e.DateTime, Title = e.Name}),
+                    Goals = currentPage?.PageEvents.Where(e => e.IsGoal).Take(10).Select(e => new EventEntry() { EngagementValue = e.Value, Timestamp = e.DateTime, Title = e.Name }),
                     PageEvents = currentPage?.PageEvents.Where(e => !e.IsGoal).Take(10).Select(e => new EventEntry() { EngagementValue = e.Value, Timestamp = e.DateTime, Title = e.Name })
                 };
 
                 //Sitecore.CES.DeviceDetection.DeviceDetectionManager
                 var deviceDetectionManager = DependencyResolver.Current.GetService<DeviceDetectionManagerBase>();
-                
+
                 if (deviceDetectionManager != null && deviceDetectionManager.IsEnabled && deviceDetectionManager.IsReady && !string.IsNullOrEmpty(Tracker.Current.Interaction.UserAgent))
                 {
                     var deviceData = deviceDetectionManager.GetDeviceInformation(Tracker.Current.Interaction.UserAgent);
@@ -152,7 +152,7 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
 
             return string.Empty;
         }
-    
+
 
         public bool IsTrackerActive
         {
@@ -206,7 +206,9 @@ namespace Sitecore.SharedSource.XConnectHelper.Impl
 
         public void SetIdentifier(string id, string source)
         {
-            Tracker.Current.Session.IdentifyAs(source, id);
+            var identificationManager = DependencyInjection.ServiceLocator.ServiceProvider.GetRequiredService<Analytics.Tracking.Identification.IContactIdentificationManager>();
+
+            identificationManager.IdentifyAs(new Analytics.Tracking.Identification.KnownContactIdentifier(source, id));
         }
 
         public IEnumerable<string> ValidateConfig()
